@@ -14,7 +14,7 @@ const allowedOrigins = [
 ];
 
 app.use(
-  cors({ origin: "https://ems-akit.netlify.app" || "http://localhost:5173" })
+  cors({ origin: "https://ems-akit.netlify.app" && "http://localhost:5173" })
 );
 
 app.use(express.json());

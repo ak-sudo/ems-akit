@@ -8,13 +8,8 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const allowedOrigins = [
-  "http://localhost:3000",
-  "https://ems-akit.netlify.app"
-];
-
 app.use(
-  cors({ origin: "https://ems-akit.netlify.app" && "http://localhost:5173" })
+  cors({ origin: "https://ems-akit.netlify.app" })
 );
 
 app.use(express.json());

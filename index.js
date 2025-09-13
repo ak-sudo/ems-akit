@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(
   cors({
-    origin: "https://ems-akit.netlify.app/", // frontend URL
+    origin: "https://ems-akit.netlify.app", // frontend URL
     credentials: true,               // if you’re sending cookies or auth headers
   })
 );

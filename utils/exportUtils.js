@@ -1,8 +1,6 @@
 // utils/exportUtils.js
 const { createObjectCsvWriter } = require("csv-writer");
 const PDFDocument = require("pdfkit");
-const path = require("path")
-const fs = require("fs")
 
 function exportToCSV(res, data, filename) {
   res.setHeader("Content-Type", "text/csv");

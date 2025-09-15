@@ -24,6 +24,7 @@
     "mongoose": "^8.18.0",
     "nodemailer": "^7.0.5",
     "nodemon": "^3.1.10",
+    "pdfkit": "^0.17.2",
     "twilio": "^5.8.0"
   }
 }

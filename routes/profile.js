@@ -10,8 +10,6 @@ const { urlencoded } = require("body-parser");
 
 profile.use(urlencoded({ extended: true }));
 
-
-
 profile.get("/:role/:id", async (req, res) => {
   const { role, id } = req.params;
   if (!role || !id) {

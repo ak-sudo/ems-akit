@@ -20,6 +20,49 @@ admin.get("/allUsers", async (req, res) => {
   }
 });
 
+admin.get("/allStudents", async (req, res) => {
+  try {
+    const students = await userModel.aggregate([
+      {
+        $match: { role: "student" },
+      },
+      {
+        $addFields: {
+          userIdStr: { $toString: "$_id" }, // convert ObjectId → string
+        },
+      },
+      {
+        $lookup: {
+          from: "updatestudents", // your collection name
+          localField: "userIdStr", // now string
+          foreignField: "connectionId", // string field in updatedStudentDetail
+          as: "studentDetails",
+        },
+      },
+      {
+        $unwind: {
+          path: "$studentDetails",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          email: 1,
+          roll: "$studentDetails.rollNumber",
+        },
+      },
+    ]);
+
+    res.json(students);
+  } catch (err) {
+    console.error("Error fetching students:", err);
+    res.status(500).json({ message: "Server Error!" });
+  }
+});
+
+
 admin.post("/createNewEvent", async (req, res) => {
   const eventData = req.body;
   if (eventData) {
@@ -171,7 +214,9 @@ admin.put("/approve/faculty/:id", async (req, res) => {
     } else {
       res
         .status(409)
-        .json({ message: "❌ Faculty could not be Approved! Try again later!" });
+        .json({
+          message: "❌ Faculty could not be Approved! Try again later!",
+        });
     }
   } else if (status === "rejected") {
     const resp = await userModel.findByIdAndUpdate(id, {
@@ -182,16 +227,13 @@ admin.put("/approve/faculty/:id", async (req, res) => {
         .status(200)
         .json({ message: "✅ Faculty's approval request has been refused!" });
     } else {
-      res
-        .status(409)
-        .json({
-          message:
-            "❌ Faculty's approval request could not be refused! Try again later!",
-        });
+      res.status(409).json({
+        message:
+          "❌ Faculty's approval request could not be refused! Try again later!",
+      });
     }
-  }
-  else{
-    res.status(500).json({message: "⚠️ Internal server error occurred!"})
+  } else {
+    res.status(500).json({ message: "⚠️ Internal server error occurred!" });
   }
 });
 

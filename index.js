@@ -16,7 +16,7 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/api/gallery", albumRoutes);
+
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
@@ -25,6 +25,17 @@ app.listen(PORT, () => {
 app.get('/', (req,res)=>{
     res.send('Reached backend server!');
 })
+
+// STUDENT ROUTES
+const student = require("./routes/student")
+app.use("/api/students", student)
+
+// GALERY ROUTES
+app.use("/api/gallery", albumRoutes);
+
+// ALBUM ROUTES
+const album = require('./routes/album');
+app.use('/api/albums', album);
 
 // AUTH ROUTES
 const authRoutes = require('./routes/auth');
@@ -61,5 +72,4 @@ app.use((req,res,next)=>{
 })
 
 // ✅ ❌
-
 

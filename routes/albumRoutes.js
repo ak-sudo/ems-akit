@@ -2,6 +2,7 @@ const express = require("express");
 const {
   createAlbum,
   getAlbums,
+  deleteAlbum,
   uploadMedia,
   deleteMedia,
   upload
@@ -22,7 +23,7 @@ router.post("/albums/:albumId/media", upload.single("file"), uploadMedia);
 // Delete a media file from album
 router.delete("/media/:mediaId", deleteMedia);
 
-router.delete("/albums/:albumId/", deleteMedia);
+router.delete("/albums/:albumId", deleteAlbum);
 
 module.exports = router;
 

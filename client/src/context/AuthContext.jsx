@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async () => {
-    const res = await fetch("/auth/me", {
+    const res = await fetch(`${BaseUrl}/api/auth/verify`, {
       credentials: "include",
     });
     const data = await res.json();
@@ -40,8 +40,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
-    await fetch("/auth/logout", {
-      method: "POST",
+    await fetch(`${BaseUrl}/api/auth/logout`, {
       credentials: "include",
     });
     setUser(null);
@@ -63,4 +62,4 @@ export const AuthProvider = ({ children }) => {
 };
 
 // custom hook (super clean usage)
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => useContext(AuthContext); 

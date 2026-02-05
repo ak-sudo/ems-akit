@@ -4,7 +4,7 @@ const auth = express();
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const verifyToken = require('../middleware/verifyToken')
+const verifyToken = require("../middleware/verifyToken");
 
 auth.post("/signup", async (req, res) => {
   const details = req.body;
@@ -42,40 +42,47 @@ auth.post("/login", async (req, res) => {
         process.env.JWT_SECRET,
       );
 
-    //   res.cookie("isLoggedIn", true);
-      res.cookie("token", token,{maxAge:3600000,httpOnly:true});
+      //   res.cookie("isLoggedIn", true);
+      res.cookie("token", token, { maxAge: 3600000, httpOnly: true });
 
       if (getUser.role === "faculty" && isApproved) {
-        return res
-          .status(200)
-          .json({
-            msg: "User logged in successfully",
-            token: token,
+        return res.status(200).json({
+          msg: "User logged in successfully",
+          user: {
             id: getUser._id,
-          });
+            email: getUser.email,
+            role: getUser.role,
+            dp: getUser.dpurl,
+            approved: isApproved,
+          },
+        });
       } else if (getUser.role === "student") {
-        return res
-          .status(200)
-          .json({
-            msg: "Logged In Successfully",
-            token: token,
+        return res.status(200).json({
+          msg: "Logged In Successfully",
+          user: {
             id: getUser._id,
-          });
+            email: getUser.email,
+            role: getUser.role,
+            dp: getUser.dpurl,
+            approved: isApproved,
+          },
+        });
       } else {
-        return res
-          .status(401)
-          .json({
-            msg: "Approval by admin is still pending! Once approved you will be logged in",
-            token: token,
+        return res.status(401).json({
+          msg: "Approval by admin is still pending! Once approved you will be logged in",
+          user: {
             id: getUser._id,
-          });
+            email: getUser.email,
+            role: getUser.role,
+            dp: getUser.dpurl,
+            approved: isApproved,
+          },
+        });
       }
     } else {
-      return res
-        .status(400)
-        .send({
-          err: "Incorrect email or password entered! Please try again.",
-        });
+      return res.status(400).send({
+        err: "Incorrect email or password entered! Please try again.",
+      });
     }
   } else {
     res
@@ -84,11 +91,16 @@ auth.post("/login", async (req, res) => {
   }
 });
 
-// /api/auth/me
-auth.get('/verify',verifyToken,(req,res)=>{
-    console.log(req.user)
-    return res.json({user: req.user})
+// /api/auth/verify
+auth.get("/verify", verifyToken, (req, res) => {
 
-})
+  return res.json({ user: req.user });
+});
+
+auth.get("/logout", verifyToken, (req, res) => {
+  res.clearCookie("token");
+
+  return res.json({ user: req.user });
+});
 
 module.exports = auth;

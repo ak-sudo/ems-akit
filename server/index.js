@@ -43,7 +43,7 @@ app.use('/api/albums', album);
 
 // AUTH ROUTES
 const authRoutes = require('./routes/auth');
-app.use('/api/auth', authRoutes);
+app.use('/api/auth', authRoutes);   
 
 // OTP ROUTES
 const otpRoutes = require('./routes/otp');

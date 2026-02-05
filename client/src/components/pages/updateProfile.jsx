@@ -4,14 +4,16 @@ import Navbar from "../landing/navbar";
 import Footer from "../landing/footer";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useAuth } from "../../context/AuthContext";
 
 
 export default function UpdateProfile() {
   const navigate = useNavigate();
 
 
-  const userdata = JSON.parse(localStorage.getItem("user"));
-  const userRole = userdata.role;
+  const {user} = useAuth();
+
+  const userRole = user.role;
   const BaseUrl = import.meta.env.VITE_BASEURL;
 
   const [formData, setFormData] = useState({
@@ -35,7 +37,7 @@ export default function UpdateProfile() {
   useEffect(() => {
       const fetchProfileData = async () => {
         const res = await axios.get(
-          `${BaseUrl}/api/profile/update/${userdata.role}/${userdata.id}`
+          `${BaseUrl}/api/profile/update/${user.role}/${user.id}`
         );
         setFormData(res.data);
         } 
@@ -58,7 +60,7 @@ export default function UpdateProfile() {
         return;
       } else {
         const resp = await fetch(
-          `${BaseUrl}/api/user/student/${userdata.id}`,
+          `${BaseUrl}/api/user/student/${user.id}`,
           {
             method: "PUT",
             headers: {
@@ -103,7 +105,7 @@ export default function UpdateProfile() {
         return;
       } else {
         const resp = await fetch(
-          `${BaseUrl}/api/user/faculty/${userdata.id}`,
+          `${BaseUrl}/api/user/faculty/${user.id}`,
           {
             method: "PUT",
             headers: {
@@ -155,7 +157,7 @@ export default function UpdateProfile() {
           <div className="flex flex-col items-center text-center mb-8">
             <div className="relative">
               <img
-                src={userdata.dp}
+                src={user.dp}
                 alt="Profile"
                 className="h-24 w-24 rounded-full object-cover shadow-md border-4 border-blue-500 hover:scale-105 transition-transform duration-300"
               />
@@ -163,7 +165,7 @@ export default function UpdateProfile() {
               <span className="absolute bottom-0 right-0 h-4 w-4 bg-green-500 border-2 border-white rounded-full"></span>
             </div>
             <h2 className="text-xl md:text-2xl font-semibold mt-4 text-gray-900 tracking-wide">
-              {userdata.email}
+              {user.email}
             </h2>
             <p className="text-blue-600 font-medium text-sm md:text-base capitalize mt-1">
               {userRole}

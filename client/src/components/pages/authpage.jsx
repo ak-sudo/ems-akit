@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { useNavigate } from "react-router-dom";
 import { decodeToken } from "react-jwt";
 import Footer from "../landing/footer";
 import { createCookie } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+
 
 export default function AuthPage() {
+
   const navigate = useNavigate();
+  const {login} = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [message, setMessage] = useState(null);
   const [submitted, setSubmitted] = useState(false);
@@ -49,7 +53,6 @@ export default function AuthPage() {
           {
             method: "POST",
             body: data,
-            credentials:'include'
           }
         );
 
@@ -159,24 +162,21 @@ export default function AuthPage() {
       }
     );
 
-    const data = await response.json();
+    const data = await response.json();    
 
     if (!data.err) {
       setErrors({})
       if (isLogin) {
         const resp = await fetch(`${BaseUrl}/api/auth/verify`,{credentials:'include'})
         const getUser = await resp.json()
-        console.log(getUser)
 
-        const user = decodeToken(data.token);
-
-        if (user.role === "faculty" && !user.approved) {
+        if (getUser.user.role === "faculty" && !getUser.user.approved) {
           setMessage(
             "⚠️ Approval by admin is still pending! Once approved you will be logged in"
           );
         } else {
-
-          localStorage.setItem("user", JSON.stringify(user.id));
+          localStorage.setItem('isLoggedIn',true)
+          login()
           setSubmitted(false)
           navigate("/");
         }

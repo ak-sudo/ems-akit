@@ -1,51 +1,40 @@
 import React, { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
-import { useNavigate } from "react-router-dom"; // ⬅️ Import for navigation
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
+export default function Navbar({ showMessage = true }) {
+  const navigate = useNavigate();
+  const {user, isAuthenticated, logout, login } = useAuth();
 
-export default function Navbar({showMessage}) {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [message, setMessage] = useState(null);
-  const [user,setUser] = useState({})
-  const navigate = useNavigate(); // ⬅️ Initialize navigate
-  const BaseUrl = import.meta.env.VITE_BASEURL;
 
-  const userdata = JSON.parse(localStorage.getItem('user'));
+  // ✅ Show login confirmation when token/user exists
 
-
-  if (userdata && !isLoggedIn){
-
-    setIsLoggedIn(true);
-    setUser(userdata);
-    if (showMessage){
-      setMessage("✅ Logged in successfully!");
-    }
+  if (localStorage.getItem("isLoggedIn")) {
+    setMessage("✅ Logged in successfully!");
+    localStorage.removeItem("isLoggedIn");
   }
 
+  // ✅ Auto-dismiss toast
+  useEffect(() => {
+    if (!message) return;
+    const timer = setTimeout(() => setMessage(null), 3000);
+    return () => clearTimeout(timer);
+  }, [message, user]);
 
   const handleLogin = () => {
-    navigate("/login"); // ⬅️ redirect to login page
+    navigate("/login");
   };
 
-  const handleLogout = () => {
-    localStorage.clear();
-    setIsLoggedIn(false);
+  const handleLogout = async () => {
+    await logout();
     setShowMenu(false);
-
     setMessage("👋 Logged out successfully!");
-    navigate("/"); // ⬅️ redirect to home after logout
+    navigate("/");
   };
-
-  // Auto-dismiss toast
-  useEffect(() => {
-    if (message) {
-      const timer = setTimeout(() => setMessage(null), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [message]);
 
   return (
     <div>
@@ -53,27 +42,41 @@ export default function Navbar({showMessage}) {
       <nav className="fixed top-0 left-0 w-full bg-white/20 backdrop-blur-lg border-b border-white/30 shadow-md z-50">
         <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
           {/* Logo */}
-          <div className="text-2xl font-extrabold text-blue-600 cursor-pointer">
-            <a href="/">EMS - AKIT</a>
+          <div
+            className="text-2xl font-extrabold text-blue-600 cursor-pointer"
+            onClick={() => navigate("/")}
+          >
+            EMS - AKIT
           </div>
 
           {/* Desktop Links */}
           <div className="hidden md:flex items-center gap-6 font-medium">
-            <a href="/#home" className="text-gray-800 hover:text-blue-600 transition" >
+            <a
+              href="/#home"
+              className="text-gray-800 hover:text-blue-600 transition"
+            >
               Home
             </a>
-            <a href="/#about" className="text-gray-800 hover:text-blue-600 transition">
+            <a
+              href="/#about"
+              className="text-gray-800 hover:text-blue-600 transition"
+            >
               About Us
             </a>
-            <a href="/#events" className="text-gray-800 hover:text-blue-600 transition">
+            <a
+              href="/#events"
+              className="text-gray-800 hover:text-blue-600 transition"
+            >
               Upcoming Events
             </a>
-            <a href="/#gallery" className="text-gray-800 hover:text-blue-600 transition">
+            <a
+              href="/#gallery"
+              className="text-gray-800 hover:text-blue-600 transition"
+            >
               Gallery
             </a>
 
-            {/* Auth Buttons */}
-            {!isLoggedIn ? (
+            {!isAuthenticated ? (
               <button
                 onClick={handleLogin}
                 className="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition"
@@ -90,10 +93,16 @@ export default function Navbar({showMessage}) {
                 />
                 {showMenu && (
                   <div className="absolute right-0 mt-3 w-48 bg-white shadow-xl rounded-xl py-2 animate-fadeIn">
-                    <button className="block w-full text-left px-4 py-2 hover:bg-gray-100" onClick={()=>navigate('/myProfile')}>
+                    <button
+                      className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                      onClick={() => navigate("/myProfile")}
+                    >
                       My Profile
                     </button>
-                    <button className="block w-full text-left px-4 py-2 hover:bg-gray-100" onClick={()=>navigate('/updateProfile')}>
+                    <button
+                      className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                      onClick={() => navigate("/updateProfile")}
+                    >
                       Update Details
                     </button>
                     <button
@@ -123,71 +132,58 @@ export default function Navbar({showMessage}) {
         {mobileOpen && (
           <div className="md:hidden bg-white/90 backdrop-blur-md border-t border-gray-200 animate-slideDown">
             <div className="flex flex-col items-end mr-10 relative gap-4 py-6 font-medium">
-              <a
-                href="/"
-                className="text-gray-800 hover:text-blue-600"
-                onClick={() => setMobileOpen(false)}
-              >
+              <a href="/" className="text-gray-800 hover:text-blue-600">
                 Home
               </a>
-              <a
-                href="/#about"
-                className="text-gray-800 hover:text-blue-600"
-                onClick={() => setMobileOpen(false)}
-              >
+              <a href="/#about" className="text-gray-800 hover:text-blue-600">
                 About Us
               </a>
-              <a
-                href="/#events"
-                className="text-gray-800 hover:text-blue-600"
-                onClick={() => setMobileOpen(false)}
-              >
+              <a href="/#events" className="text-gray-800 hover:text-blue-600">
                 Upcoming Events
               </a>
-              <a
-                href="/#gallery"
-                className="text-gray-800 hover:text-blue-600"
-                onClick={() => setMobileOpen(false)}
-              >
+              <a href="/#gallery" className="text-gray-800 hover:text-blue-600">
                 Gallery
               </a>
 
-              {!isLoggedIn ? (
+              {!isAuthenticated ? (
                 <button
-                  onClick={() => {
-                    navigate("/login"); // ⬅️ redirect to login
-                    setMobileOpen(false);
-                  }}
+                  onClick={handleLogin}
                   className="bg-blue-600 text-white px-5 py-2 rounded-full hover:bg-blue-700 transition"
                 >
                   Login
                 </button>
               ) : (
-              <div className="absolute left-5">
-                <img
-                  src={user.dp}
-                  alt="profile"
-                  className="w-10 h-10 top-0 rounded-full cursor-pointer border-2 border-blue-500 hover:scale-105 transition"
-                  onClick={() => setShowMenu(!showMenu)}
-                />
-                {showMenu && (
-                  <div className="absolute left-0 mt-3 w-48 bg-white shadow-xl rounded-xl py-2 animate-fadeIn">
-                    <button className="block w-full text-left px-4 py-2 hover:bg-gray-100" onClick={()=>navigate('/myProfile')}>
-                      My Profile
-                    </button>
-                    <button className="block w-full text-left px-4 py-2 hover:bg-gray-100" onClick={()=>navigate('/updateProfile')}>
-                      Update Details
-                    </button>
-                    <button
-                      onClick={handleLogout}
-                      className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-500"
-                    >
-                      Logout
-                    </button>
-                  </div>
-                )}
-              </div>
-            )}
+                <div className="absolute left-5">
+                  <img
+                    src={user?.dp}
+                    alt="profile"
+                    className="w-10 h-10 top-0 rounded-full cursor-pointer border-2 border-blue-500 hover:scale-105 transition"
+                    onClick={() => setShowMenu(!showMenu)}
+                  />
+                  {showMenu && (
+                    <div className="absolute left-0 mt-3 w-48 bg-white shadow-xl rounded-xl py-2 animate-fadeIn">
+                      <button
+                        className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                        onClick={() => navigate("/myProfile")}
+                      >
+                        My Profile
+                      </button>
+                      <button
+                        className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                        onClick={() => navigate("/updateProfile")}
+                      >
+                        Update Details
+                      </button>
+                      <button
+                        onClick={handleLogout}
+                        className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-500"
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -198,8 +194,7 @@ export default function Navbar({showMessage}) {
         <div
           className="fixed top-16 right-5 px-5 py-3 rounded-xl shadow-lg 
           bg-white/90 backdrop-blur-md border border-gray-200 
-          text-gray-800 flex items-center gap-3 z-50 
-          animate-slideIn"
+          text-gray-800 flex items-center gap-3 z-50 animate-slideIn"
         >
           <span>{message}</span>
           <button

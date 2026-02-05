@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useAuth } from "../../context/AuthContext";
 
 export default function EventPage() {
   const { id } = useParams();
@@ -7,12 +8,12 @@ export default function EventPage() {
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true); // event loading
   const [formData, setFormData] = useState({});
-  const [user, setUser] = useState(null);
   const [userData, setUserData] = useState(null);
   const [userLoading, setUserLoading] = useState(true); // ✅ new loading state for user profile
   const [isDisbale,setIsDisable] = useState(true)
   const [message,setMessage] = useState('');
   const BaseUrl = import.meta.env.VITE_BASEURL;
+  const {user} = useAuth()
 
 
   useEffect(() => {
@@ -30,17 +31,15 @@ export default function EventPage() {
     fetchData();
 
     // Load logged-in user (from localStorage)
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    setUser(storedUser);
 
     async function UserDetails() {
-      if (!storedUser) {
+      if (!user) {
         setUserLoading(false);
         return;
       }
       try {
         let res = await fetch(
-          `${BaseUrl}/api/profile/${storedUser.role}/${storedUser.id}`
+          `${BaseUrl}/api/profile/${user.role}/${user.id}`
         );
         const data = await res.json();
         setUserData(data);

@@ -31,7 +31,7 @@ otp.post("/send-otp", async (req, res) => {
   It will expire in 5 minutes. 
     ~ EMS - AKIT`,
       },
-      { headers: { "x-api-key": API_KEY }},
+      { headers: { "x-api-key": API_KEY },withCredentials: true},
     );
     const { data } = resp.data;
 

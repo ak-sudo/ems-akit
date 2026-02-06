@@ -10,22 +10,19 @@ const BASE_URL = "https://api.textbee.dev/api/v1";
 const API_KEY = "b67bcb24-95f2-456c-85c7-e72732f821dc";
 const DEVICE_ID = "68bbb3f4c3eec747842325a0";
 
-
 let otpStore = {}; // { phone: otp }
 
 // API to send OTP
 otp.post("/send-otp", async (req, res) => {
-  try{
+  const { phone } = req.body;
 
-    const {phone}  = req.body;
+  if (!phone) return res.json({ success: false, message: "Phone required" });
 
-    if (!phone) return res.json({ success: false, message: "Phone required" });
+  // Generate random 6-digit OTP
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  otpStore[phone] = otp;
 
-    // Generate random 6-digit OTP
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    otpStore[phone] = otp;
-
-    const res = await axios.post(
+    const resp = await axios.post(
       `${BASE_URL}/gateway/devices/${DEVICE_ID}/send-sms`,
       {
         recipients: [`${phone}`],
@@ -34,15 +31,18 @@ otp.post("/send-otp", async (req, res) => {
   It will expire in 5 minutes. 
     ~ EMS - AKIT`,
       },
-
-      { headers: { "x-api-key": API_KEY } }
+      { headers: { "x-api-key": API_KEY }},
     );
+    const { data } = resp.data;
 
-    res.json({ success: true, message: "OTP sent" });
-  }
-  catch{
-    res.json({ success: false, message: "Unable to send the OTP at the moment!" });
-  }
+    if (data.success === true) {
+      return res.json({ success: true, message: "OTP sent" });
+    } else {
+      return res.json({
+        success: false,
+        message: "Could not send OTP at the moment. Try agin later",
+      });
+    }
 });
 
 // API to verify OTP

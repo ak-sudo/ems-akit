@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3000;
 
 
 app.use(
-  cors({ origin: 'https://ems-akit.onrender.com', credentials: true})
+  cors({ origin: 'https://ems-akit.netlify.app', credentials: true})
   
 );
 app.use(cookieParser())

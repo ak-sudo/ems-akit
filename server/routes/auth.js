@@ -43,7 +43,7 @@ auth.post("/login", async (req, res) => {
       );
 
       //   res.cookie("isLoggedIn", true);
-      res.cookie("token", token, { maxAge: 3600000, httpOnly: true });
+      res.cookie("token", token, { maxAge: 3600000, httpOnly: true, secure:true, sameSite:'none' });
 
       if (getUser.role === "faculty" && isApproved) {
         return res.status(200).json({

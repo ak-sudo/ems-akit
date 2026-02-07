@@ -43,7 +43,13 @@ auth.post("/login", async (req, res) => {
       );
 
       //   res.cookie("isLoggedIn", true);
-      res.cookie("token", token, { maxAge: 3600000, httpOnly: true, secure:true, sameSite:'none' });
+      res.cookie("token", token, {
+        maxAge: 3600000,
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        path: "/",
+      });
 
       if (getUser.role === "faculty" && isApproved) {
         return res.status(200).json({
@@ -93,16 +99,22 @@ auth.post("/login", async (req, res) => {
 
 // /api/auth/verify
 auth.get("/verify", verifyToken, (req, res) => {
-
   return res.json({ user: req.user });
 });
 
 auth.get("/logout", (req, res) => {
-  res.clearCookie("token",{
-  httpOnly: true,
-  secure: true,   
-  sameSite: "none",  
-})
+  try {
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      path: "/",
+    });
+
+    return res.json({success: 'Logged Out'})
+  } catch {
+    return res.json({ fail: "Could not log you out at the moment!" });
+  }
 });
 
 module.exports = auth;

@@ -102,6 +102,7 @@ auth.get("/logout", (req, res) => {
   httpOnly: true,
   secure: true,   
   sameSite: "none",  
+})
 });
 
 module.exports = auth;

@@ -97,10 +97,11 @@ auth.get("/verify", verifyToken, (req, res) => {
   return res.json({ user: req.user });
 });
 
-auth.get("/logout", verifyToken, (req, res) => {
-  res.clearCookie("token");
-
-  return res.json({ user: req.user });
+auth.get("/logout", (req, res) => {
+  res.clearCookie("token",{
+  httpOnly: true,
+  secure: true,   
+  sameSite: "none",  
 });
 
 module.exports = auth;

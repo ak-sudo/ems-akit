@@ -18,8 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 
 
 app.listen(PORT, () => {
-    console.log(`Server is running on ${
-        process.env.VITE_BASEURL_CORS+':'+PORT}`);
+    console.log(`Server is running`);
 });
 
 app.get('/', (req,res)=>{

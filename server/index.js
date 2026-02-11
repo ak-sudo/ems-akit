@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3000;
 
 
 app.use(
-  cors({ origin: 'http://localhost:5173', credentials: true})
+  cors({ origin: 'https://ems-akit.netlify.app', credentials: true})
   
 );
 app.use(cookieParser())

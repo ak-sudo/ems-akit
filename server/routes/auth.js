@@ -63,7 +63,8 @@ auth.post("/login", async (req, res) => {
             approved: isApproved,
           },
         });
-      } else if (getUser.role === "student") {
+      }
+      if (getUser.role === "student") {
         const token = jwt.sign(
           {
             id: getUser._id,
@@ -93,7 +94,39 @@ auth.post("/login", async (req, res) => {
             approved: isApproved,
           },
         });
-      } else {
+      } 
+      if (getUser.role === "admin") {
+        const token = jwt.sign(
+          {
+            id: getUser._id,
+            email: getUser.email,
+            role: getUser.role,
+            dp: getUser.dpurl,
+            approved: isApproved,
+          },
+          process.env.JWT_SECRET,
+        );
+
+        //   res.cookie("isLoggedIn", true);
+        res.cookie("token", token, {
+          maxAge: 3600000,
+          httpOnly: true,
+          secure: true,
+          sameSite: "none",
+          path: "/",
+        });
+        return res.status(200).json({
+          msg: "Logged In Successfully",
+          user: {
+            id: getUser._id,
+            email: getUser.email,
+            role: getUser.role,
+            dp: getUser.dpurl,
+            approved: isApproved,
+          },
+        });
+      } 
+      else {
         return res.status(401).json({
           msg: "Approval by admin is still pending! Once approved you will be logged in",
           user: {
@@ -105,7 +138,8 @@ auth.post("/login", async (req, res) => {
           },
         });
       }
-    } else {
+    } 
+    else {
       return res.status(400).send({
         err: "Incorrect email or password entered! Please try again.",
       });

@@ -18,7 +18,8 @@ app.use(express.urlencoded({ extended: true }));
 
 
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`Server is running on ${
+        process.env.VITE_BASEURL_CORS+':'+PORT}`);
 });
 
 app.get('/', (req,res)=>{
@@ -64,6 +65,10 @@ app.use('/api/profile', profileRoutes);
 // ADMIN ROUTES
 const adminRoutes = require('./routes/admin')
 app.use('/api/admin', adminRoutes)
+
+// RESET PASSWORD
+const resetPassword = require('./routes/resetPassword')
+app.use('/api/reset-password', resetPassword)
 
 //  NEWS ROUTES
 const newsRoutes = require('./routes/news');

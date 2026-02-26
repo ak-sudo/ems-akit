@@ -16,9 +16,9 @@ import Login from "./components/pages/authpage";
 import AdminDashboard from "./components/pages/adminDashboard";
 import EventPage from "./components/pages/EventPage";
 import VolunteerDashboard from "./components/pages/volunteer";
+import ScanPage from "./components/pages/ScanPage";
 
 import { useAuth } from "./context/AuthContext";
-
 
 // ✅ Protected Route
 function ProtectedRoute({ children }) {
@@ -29,7 +29,6 @@ function ProtectedRoute({ children }) {
   return isAuthenticated ? children : <Navigate to="/login" replace />;
 }
 
-
 // ✅ Admin Route
 function AdminRoute({ children }) {
   const { user, loading } = useAuth();
@@ -39,6 +38,13 @@ function AdminRoute({ children }) {
   return user?.role === "admin" ? children : <Navigate to="/" replace />;
 }
 
+function VolunteerRoute({ children }) {
+  const { user, loading } = useAuth();
+
+  if (loading) return <div>Loading...</div>;
+
+  return user?.role !== "student" ? children : <Navigate to="/" replace />;
+}
 
 export default function App() {
   const { isAuthenticated, logout, user } = useAuth();
@@ -55,7 +61,6 @@ export default function App() {
 
         <main className="flex-grow">
           <Routes>
-
             {/* Home */}
             <Route
               path="/"
@@ -72,11 +77,7 @@ export default function App() {
             <Route
               path="/login"
               element={
-                !isAuthenticated ? (
-                  <Login />
-                ) : (
-                  <Navigate to="/" replace />
-                )
+                !isAuthenticated ? <Login /> : <Navigate to="/" replace />
               }
             />
 
@@ -107,6 +108,17 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <MyProfile />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/scan"
+              element={
+                <ProtectedRoute>
+                  <VolunteerRoute>
+                    <ScanPage />
+                  </VolunteerRoute>
                 </ProtectedRoute>
               }
             />

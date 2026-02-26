@@ -10,9 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/material": "^7.3.8",
     "@tailwindcss/vite": "^4.1.12",
+    "@yudiel/react-qr-scanner": "^2.5.1",
     "appwrite": "^19.0.0",
-    "axios": "^1.12.2",
+    "axios": "^1.13.5",
     "dotenv": "^17.2.3",
     "framer-motion": "^12.23.12",
     "js-cookie": "^3.0.5",

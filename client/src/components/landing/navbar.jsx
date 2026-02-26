@@ -5,7 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 
 export default function Navbar({ showMessage = true }) {
   const navigate = useNavigate();
-  const {user, isAuthenticated, logout, login } = useAuth();
+  const { user, isAuthenticated, logout, login } = useAuth();
 
   const [showMenu, setShowMenu] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -76,6 +76,21 @@ export default function Navbar({ showMessage = true }) {
               Gallery
             </a>
 
+            {isAuthenticated ? (
+              user.role !== "student" ? (
+                <a
+                  href="/scan"
+                  className="text-gray-800 hover:text-blue-600 transition"
+                >
+                  Scan Now
+                </a>
+              ) : (
+                ""
+              )
+            ) : (
+              ""
+            )}
+
             {!isAuthenticated ? (
               <button
                 onClick={handleLogin}
@@ -144,6 +159,21 @@ export default function Navbar({ showMessage = true }) {
               <a href="/#gallery" className="text-gray-800 hover:text-blue-600">
                 Gallery
               </a>
+
+              {isAuthenticated ? (
+                user.role !== "student" ? (
+                  <a
+                    href="/scan"
+                    className="text-gray-800 hover:text-blue-600 transition"
+                  >
+                    Scan Now
+                  </a>
+                ) : (
+                  ""
+                )
+              ) : (
+                ""
+              )}
 
               {!isAuthenticated ? (
                 <button

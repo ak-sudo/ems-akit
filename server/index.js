@@ -70,6 +70,9 @@ app.use('/api/admin', adminRoutes)
 const resetPassword = require('./routes/resetPassword')
 app.use('/api/reset-password', resetPassword)
 
+const userScanned = require('./routes/scan')
+app.use('/api/scan', userScanned)
+
 //  NEWS ROUTES
 const newsRoutes = require('./routes/news');
 

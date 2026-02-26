@@ -8,7 +8,7 @@ export default function Footer() {
         
         {/* Brand / Logo Section */}
         <div>
-          <h2 className="text-2xl font-bold text-white mb-3">College Events</h2>
+          <h2 className="text-2xl font-bold text-white mb-3">EMS -AKIT</h2>
           <p className="text-gray-400">
             A modern platform to discover and register for all upcoming college events.
           </p>
@@ -41,7 +41,7 @@ export default function Footer() {
 
       {/* Bottom Copyright Bar */}
       <div className="bg-gray-800 text-center text-gray-400 py-4 text-sm border-t border-gray-700">
-        © {new Date().getFullYear()} College Events. All Rights Reserved.
+        © {new Date().getFullYear()} EMS - AKIT. All Rights Reserved.
       </div>
     </footer>
   );

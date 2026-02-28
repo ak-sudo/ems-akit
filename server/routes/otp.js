@@ -16,7 +16,7 @@ const BASE_URL = "https://api.textbee.dev/api/v1";
 
 //Agraj's
 const API_KEY = "74e0f64a-06f5-4be9-a59a-380d38e82281";
-const DEVICE_ID = "6996d8d9f8dad099dc8d6112";
+// const DEVICE_ID = "6996d8d9f8dad099dc8d6112";
 
 
 

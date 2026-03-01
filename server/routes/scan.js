@@ -24,7 +24,7 @@ scan.get("/user/:id", async (req, res) => {
         { outTime: Date.now() }
       );
     } else {
-      await eventAttendance.create({ studentId: id });
+      await eventAttendance.create({ studentId: id, connectionId: id,});
     }
 
     return res.json({

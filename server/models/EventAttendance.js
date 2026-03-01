@@ -6,8 +6,15 @@ const eventAttendanceSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-  inTime: { type: Date, default: Date.now() },
+  connectionId :{
+    type: String,
+    ref: "updatestudent",
+  },
+  inTime: { type: Date, default: Date.now },
   outTime: { type: Date, default: null},
+  month: {type:String, default: () =>
+    new Date().toLocaleString("default", { month: "long" })},
+  session: {type:String, default: () => new Date().getFullYear().toString()}
 });
 
 const eventAttendance = new mongoose.model(

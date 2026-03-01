@@ -4,6 +4,8 @@ const cors = require("cors");
 const userModel = require("../models/user");
 const eventModel = require("../models/events");
 const studDetail = require("../models/updatedStudentDetails.js");
+const studEventAttendance = require("../models/EventAttendance.js");
+const eventAttendance = require("../models/EventAttendance.js");
 
 admin.use(express.urlencoded({ extended: true }));
 
@@ -11,7 +13,7 @@ admin.get("/allUsers", async (req, res) => {
   try {
     const users = await userModel.find(
       { role: { $ne: "admin" } }, // not equal to admin
-      { _id: 1, name: 1, email: 1, role: 1 } // only these fields
+      { _id: 1, name: 1, email: 1, role: 1 }, // only these fields
     );
     res.json(users);
   } catch (err) {
@@ -62,6 +64,72 @@ admin.get("/allStudents", async (req, res) => {
   }
 });
 
+admin.get("/allAttendance", async (req, res) => {
+  try{
+    const data = await eventAttendance.aggregate([
+      // Lookup User collection
+      {
+        $lookup: {
+          from: "users", // collection name in MongoDB (lowercase plural usually)
+          localField: "studentId",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+  
+      // Convert array → object
+      {
+        $unwind: {
+          path: "$user",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+  
+      // Lookup UpdateStudent collection using connectionId
+      {
+        $lookup: {
+          from: "updatestudents",
+          localField: "connectionId",
+          foreignField: "connectionId",
+          as: "studentDetail",
+        },
+      },
+  
+      {
+        $unwind: {
+          path: "$studentDetail",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+  
+      // Optional: Select fields
+      {
+        $project: {
+          _id: 1,
+          inTime: 1,
+          outTime: 1,
+          month: 1,
+          session: 1,
+  
+          "user.name": 1,
+          "user.email": 1,
+  
+          "studentDetail.branch": 1,
+          "studentDetail.semester": 1,
+          "studentDetail.year": 1,
+        },
+      },
+  
+      // Optional sorting
+      {
+        $sort: { inTime: -1 },
+      },
+    ]);
+    return res.json({data});
+  }catch(err){
+    return res.json({err: 'There was an error parsing the details! Try again later.'})
+  }
+});
 
 admin.post("/createNewEvent", async (req, res) => {
   const eventData = req.body;
@@ -89,7 +157,7 @@ admin.get("/eventList", async (req, res) => {
         description: 1,
         programs: 1,
         coordinators: 1,
-      }
+      },
     );
     res.json(events);
   } catch (err) {
@@ -107,7 +175,7 @@ admin.put("/update/:eventId", async (req, res) => {
     const update = await eventModel.findByIdAndUpdate(
       eventId,
       { $set: data },
-      { new: true }
+      { new: true },
     );
     if (!update) {
       return res.status(404).json({ err: "Could not update" });
@@ -212,11 +280,9 @@ admin.put("/approve/faculty/:id", async (req, res) => {
     if (resp) {
       res.status(200).json({ message: "✅ Faculty Approved!" });
     } else {
-      res
-        .status(409)
-        .json({
-          message: "❌ Faculty could not be Approved! Try again later!",
-        });
+      res.status(409).json({
+        message: "❌ Faculty could not be Approved! Try again later!",
+      });
     }
   } else if (status === "rejected") {
     const resp = await userModel.findByIdAndUpdate(id, {

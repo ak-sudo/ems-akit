@@ -2,25 +2,36 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const albumRoutes = require("./routes/albumRoutes");
+const platformAuth = require("./middleware/platformAuth");
 
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 
+
 app.use(
   cors({ origin: 'https://ems-akit.netlify.app', credentials: true})
-  
 );
 app.use(cookieParser())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
 app.listen(PORT, () => {
     console.log(`Server is running on ${
         process.env.VITE_BASEURL_CORS+':'+PORT}`);
 });
+
+// AUTH ROUTES
+const authRoutes = require('./routes/auth');
+app.use('/api/auth', authRoutes);   
+
+// OTP ROUTES
+const otpRoutes = require('./routes/otp');
+app.use('/api/otp', otpRoutes);
+
+// API Authentication
+app.use(platformAuth)
 
 app.get('/', (req,res)=>{
     res.send('Reached backend server!');
@@ -40,14 +51,6 @@ app.use("/api/gallery", albumRoutes);
 // ALBUM ROUTES
 const album = require('./routes/album');
 app.use('/api/albums', album);
-
-// AUTH ROUTES
-const authRoutes = require('./routes/auth');
-app.use('/api/auth', authRoutes);   
-
-// OTP ROUTES
-const otpRoutes = require('./routes/otp');
-app.use('/api/otp', otpRoutes);
 
 // UPDATE USER ROUTES
 const updateUserRoutes = require('./routes/updateDetail');

@@ -3,6 +3,10 @@ module.exports = function platformAuth(req, res, next) {
   const key = req.headers["x-platform-key"];
   const origin = req.headers.origin;
 
+  if (req.path.startsWith("/socket.io")) {
+    return next();
+  }
+
   if (origin !== process.env.ALLOWED_ORIGIN) {
     return res.status(403).json({ message: "Blocked origin" });
   }

@@ -3,7 +3,8 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const albumRoutes = require("./routes/albumRoutes");
 const platformAuth = require("./middleware/platformAuth");
-
+const http = require("http");
+const { Server } = require("socket.io");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -15,9 +16,18 @@ app.use(
 );
 app.use(cookieParser())
 app.use(express.json());
+
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: { origin: "*" }
+});
+
+app.set("io", io);
+
+
 app.use(express.urlencoded({ extended: true }));
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`Server is running on ${
         process.env.VITE_BASEURL_CORS+':'+PORT}`);
 });
@@ -75,6 +85,10 @@ app.use('/api/reset-password', resetPassword)
 
 const userScanned = require('./routes/scan')
 app.use('/api/scan', userScanned)
+
+
+const userScannedLibrary = require("./routes/scanLibrary");
+app.use("/api/scanLibrary", userScannedLibrary);
 
 //  NEWS ROUTES
 const newsRoutes = require('./routes/news');

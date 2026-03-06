@@ -131,6 +131,74 @@ admin.get("/allAttendance", async (req, res) => {
   }
 });
 
+
+admin.get("/libraryAttendance", async (req, res) => {
+  try{
+    const data = await libraryAttendance.aggregate([
+      // Lookup User collection
+      {
+        $lookup: {
+          from: "users", // collection name in MongoDB (lowercase plural usually)
+          localField: "studentId",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+  
+      // Convert array → object
+      {
+        $unwind: {
+          path: "$user",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+  
+      // Lookup UpdateStudent collection using connectionId
+      {
+        $lookup: {
+          from: "updatestudents",
+          localField: "connectionId",
+          foreignField: "connectionId",
+          as: "studentDetail",
+        },
+      },
+  
+      {
+        $unwind: {
+          path: "$studentDetail",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+  
+      // Optional: Select fields
+      {
+        $project: {
+          _id: 1,
+          inTime: 1,
+          outTime: 1,
+          month: 1,
+          session: 1,
+  
+          "user.name": 1,
+          "user.email": 1,
+  
+          "studentDetail.branch": 1,
+          "studentDetail.semester": 1,
+          "studentDetail.year": 1,
+        },
+      },
+  
+      // Optional sorting
+      {
+        $sort: { inTime: -1 },
+      },
+    ]);
+    return res.json({data});
+  }catch(err){
+    return res.json({err: 'There was an error parsing the details! Try again later.'})
+  }
+});
+
 admin.post("/createNewEvent", async (req, res) => {
   const eventData = req.body;
   if (eventData) {

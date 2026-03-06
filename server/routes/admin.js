@@ -6,6 +6,8 @@ const eventModel = require("../models/events");
 const studDetail = require("../models/updatedStudentDetails.js");
 const studEventAttendance = require("../models/EventAttendance.js");
 const eventAttendance = require("../models/EventAttendance.js");
+const mongoose = require("mongoose");
+const libraryAttendance = require("../models/AttendanceLibrary.js");
 
 admin.use(express.urlencoded({ extended: true }));
 

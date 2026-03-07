@@ -13,6 +13,8 @@ scan.get("/user/:id", async (req, res) => {
   }
 
   try {
+    const io = req.app.get("io");
+
     const userData = await User.findById(id);
     const updatedUserData = await updatedUser.findOne({ connectionId: id });
 

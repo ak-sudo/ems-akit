@@ -27,7 +27,7 @@ scan.get("/user/:id", async (req, res) => {
       await eventAttendance.create({ studentId: id, connectionId: id,});
     }
 
-    return res.json({
+    const responseData = {
       name: userData.name,
       designation: userData.role,
       email: userData.email,
@@ -38,8 +38,14 @@ scan.get("/user/:id", async (req, res) => {
       dob: updatedUserData?.dob,
       father: updatedUserData?.fatherName,
       photo: userData.dpurl,
-      msg: (exist)?true:false},
-    );
+      msg: exist ? true : false,
+    };
+
+    io.emit("eventAttendance:update", {
+      data: responseData,
+    });
+
+    return res.json(responseData);
 
   } catch (err) {
     console.log(err);

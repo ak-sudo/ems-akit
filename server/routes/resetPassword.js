@@ -10,7 +10,7 @@ const reset = express();
 reset.use(express.json());
 
 let otpStore = {};
-const url = process.env.BACKEND_URL;
+const url = 'https://ems-akit.onrender.com';
 
 reset.post("/send", async (req, res) => {
   identifier = req.body.identifier;

@@ -23,11 +23,11 @@ profile.get("/:role/:id", async (req, res) => {
       data = await userModel.findById(id);
 
       if (data) {
-        if (data.role === "student") {
+        if (data.role === "student" || data.role === "volunteer") {
           response = await studentModel.findOne({ connectionId: id });
           return res.status(200).send({ response, data });
         }
-        if (data.role === "faculty") {
+        if (data.role === "faculty" || data.role === "librarian") {
           response = await facultyModel.findOne({ connectionId: id });
           return res.status(200).send({ response, data });
         } else {

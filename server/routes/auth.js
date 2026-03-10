@@ -46,7 +46,7 @@ auth.post("/login", async (req, res) => {
 
         //   res.cookie("isLoggedIn", true);
         res.cookie("token", token, {
-          maxAge: 3600000,
+          maxAge: 28800000,
           httpOnly: true,
           secure: true,
           sameSite: "none",
@@ -78,7 +78,7 @@ auth.post("/login", async (req, res) => {
 
         //   res.cookie("isLoggedIn", true);
         res.cookie("token", token, {
-          maxAge: 3600000,
+          maxAge: 28800000,
           httpOnly: true,
           secure: true,
           sameSite: "none",

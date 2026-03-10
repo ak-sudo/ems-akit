@@ -11,8 +11,12 @@ otp.use(express.json());
 const BASE_URL = "https://api.textbee.dev/api/v1";
 
 //Akshat's 
-const API_KEY = "7d4b901e-3c07-48f5-97a8-ba994bd09e44";
-const DEVICE_ID = "68bbb3f4c3eec747842325a0";
+// const API_KEY = "7d4b901e-3c07-48f5-97a8-ba994bd09e44";
+// const DEVICE_ID = "68bbb3f4c3eec747842325a0";
+
+//Yash's
+const API_KEY = "066c647c-a590-4b25-a792-ecfecfe1fe69";
+const DEVICE_ID = "69afe55460c621bb9a55b0cf";
 
 //Agraj's
 // const API_KEY = "74e0f64a-06f5-4be9-a59a-380d38e82281";

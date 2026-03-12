@@ -11,7 +11,7 @@ const {
   botProtection,
   ipSpamProtection,
   payloadProtection
-} = require("./middlewares/securityMiddleware.js");
+} = require("./middleware/securityMiddleware.js");
 
 const app = express();
 const PORT = process.env.PORT || 3000;

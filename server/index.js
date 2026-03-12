@@ -5,6 +5,7 @@ const albumRoutes = require("./routes/albumRoutes");
 const platformAuth = require("./middleware/platformAuth");
 const http = require("http");
 const { Server } = require("socket.io");
+const mongoSanitize = require("express-mongo-sanitize");
 
 const {
   apiLimiter,
@@ -25,7 +26,7 @@ app.use(payloadProtection);
 
 app.use(mongoSanitize())
 
-app.use(cors({ origin: "https://ems-akit.netlify.app", credentials: true }));
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(cookieParser());
 app.use(express.json());
 

@@ -10,8 +10,7 @@ const {
   emailProtection
 } = require("../middleware/securityMiddleware.js");
 
-auth.post("/signup",  signupLimiter,
-  emailProtection, async (req, res) => {
+auth.post("/signup", async (req, res) => {
   const details = req.body;
 
   let hashedPassword = await bcrypt.hash(details.password, 10);

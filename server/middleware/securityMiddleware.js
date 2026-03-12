@@ -1,9 +1,9 @@
 const rateLimit = require("express-rate-limit");
 
-// In-memory IP tracking (can be replaced with Redis in production)
+// In-memory IP tracker
 const ipTracker = new Map();
 
-// disposable / fake domains
+// blocked disposable domains
 const blockedDomains = [
   "example.com",
   "tempmail.com",
@@ -12,10 +12,11 @@ const blockedDomains = [
   "guerrillamail.com"
 ];
 
-// -----------------------------
-// RATE LIMITER
-// -----------------------------
-export const apiLimiter = rateLimit({
+
+// ----------------------------
+// GLOBAL API RATE LIMIT
+// ----------------------------
+const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100,
   message: {
@@ -27,23 +28,23 @@ export const apiLimiter = rateLimit({
 });
 
 
-// -----------------------------
-// SIGNUP LIMITER (strict)
-// -----------------------------
-export const signupLimiter = rateLimit({
-  windowMs: 10 * 60 * 1000, // 10 minutes
+// ----------------------------
+// SIGNUP LIMITER
+// ----------------------------
+const signupLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
   max: 5,
   message: {
     success: false,
-    message: "Too many accounts created from this IP."
+    message: "Too many accounts created from this IP. Please try later."
   }
 });
 
 
-// -----------------------------
+// ----------------------------
 // BOT DETECTION
-// -----------------------------
-export const botProtection = (req, res, next) => {
+// ----------------------------
+const botProtection = (req, res, next) => {
 
   const userAgent = req.headers["user-agent"];
 
@@ -62,11 +63,13 @@ export const botProtection = (req, res, next) => {
     "insomnia"
   ];
 
-  for (let agent of suspiciousAgents) {
-    if (userAgent.toLowerCase().includes(agent)) {
+  const agent = userAgent.toLowerCase();
+
+  for (let bot of suspiciousAgents) {
+    if (agent.includes(bot)) {
       return res.status(403).json({
         success: false,
-        message: "Automated requests are blocked"
+        message: "Automated scripts are blocked"
       });
     }
   }
@@ -75,10 +78,10 @@ export const botProtection = (req, res, next) => {
 };
 
 
-// -----------------------------
+// ----------------------------
 // IP SPAM PROTECTION
-// -----------------------------
-export const ipSpamProtection = (req, res, next) => {
+// ----------------------------
+const ipSpamProtection = (req, res, next) => {
 
   const ip =
     req.headers["x-forwarded-for"] ||
@@ -100,7 +103,7 @@ export const ipSpamProtection = (req, res, next) => {
     if (data.count > 50) {
       return res.status(429).json({
         success: false,
-        message: "Too many requests detected from this IP."
+        message: "Too many requests detected from this IP"
       });
     }
   } else {
@@ -114,12 +117,12 @@ export const ipSpamProtection = (req, res, next) => {
 };
 
 
-// -----------------------------
-// EMAIL DOMAIN VALIDATION
-// -----------------------------
-export const emailProtection = (req, res, next) => {
+// ----------------------------
+// EMAIL DOMAIN PROTECTION
+// ----------------------------
+const emailProtection = (req, res, next) => {
 
-  const { email } = req.body;
+  const email = req.body.email;
 
   if (!email) return next();
 
@@ -128,7 +131,7 @@ export const emailProtection = (req, res, next) => {
   if (blockedDomains.includes(domain)) {
     return res.status(400).json({
       success: false,
-      message: "Disposable email addresses are not allowed."
+      message: "Disposable email addresses are not allowed"
     });
   }
 
@@ -136,10 +139,10 @@ export const emailProtection = (req, res, next) => {
 };
 
 
-// -----------------------------
-// REQUEST SIZE PROTECTION
-// -----------------------------
-export const payloadProtection = (req, res, next) => {
+// ----------------------------
+// PAYLOAD SIZE PROTECTION
+// ----------------------------
+const payloadProtection = (req, res, next) => {
 
   const contentLength = req.headers["content-length"];
 
@@ -151,4 +154,14 @@ export const payloadProtection = (req, res, next) => {
   }
 
   next();
+};
+
+
+module.exports = {
+  apiLimiter,
+  signupLimiter,
+  botProtection,
+  ipSpamProtection,
+  emailProtection,
+  payloadProtection
 };

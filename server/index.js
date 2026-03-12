@@ -7,12 +7,12 @@ const http = require("http");
 const { Server } = require("socket.io");
 const mongoSanitize = require("express-mongo-sanitize");
 
-const {
-  apiLimiter,
-  botProtection,
-  ipSpamProtection,
-  payloadProtection
-} = require("./middleware/securityMiddleware.js");
+// const {
+//   apiLimiter,
+//   botProtection,
+//   ipSpamProtection,
+//   payloadProtection
+// } = require("./middleware/securityMiddleware.js");
 
 const app = express();
 const PORT = process.env.PORT || 3000;

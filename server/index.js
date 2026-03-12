@@ -31,7 +31,10 @@ app.use(express.json());
 
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: { origin: "*" }
+ cors: {
+    origin: "https://ems-akit.netlify.app",
+    credentials: true
+  }
 });
 
 app.set("io", io);

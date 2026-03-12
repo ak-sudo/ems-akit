@@ -24,7 +24,11 @@ app.use(botProtection);
 app.use(ipSpamProtection);
 app.use(payloadProtection);
 
-app.use(mongoSanitize())
+app.use(
+  mongoSanitize({
+    replaceWith: "_"
+  })
+);
 
 app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(cookieParser());

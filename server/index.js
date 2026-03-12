@@ -18,11 +18,11 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 
-// GLOBAL SECURITY
-app.use(apiLimiter);
-app.use(botProtection);
-app.use(ipSpamProtection);
-app.use(payloadProtection);
+// // GLOBAL SECURITY
+// app.use(apiLimiter);
+// app.use(botProtection);
+// app.use(ipSpamProtection);
+// app.use(payloadProtection);
 
 app.use(cors({ origin: "https://ems-akit.netlify.app", credentials: true }));
 app.use(cookieParser());

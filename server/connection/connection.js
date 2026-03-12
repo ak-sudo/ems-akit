@@ -8,7 +8,7 @@ const connectDB = async () => {
     // Use Atlas URI if provided, else fallback to localhost
     const mongoURI = process.env.MONGO_URI;
 
-    const conn = await mongoose.connect(mongoURI, { keepAlive: true, connectTimeoutMS: 30000 });
+    const conn = await mongoose.connect(mongoURI, {connectTimeoutMS: 30000 });
 
     console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
   } catch (err) {

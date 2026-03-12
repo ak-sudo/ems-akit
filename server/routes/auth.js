@@ -32,7 +32,7 @@ auth.post("/login", async (req, res) => {
     if (matchHatchPwd) {
       const isApproved = getUser.approvedAsFaculty;
 
-      if (getUser.role === "faculty" && isApproved) {
+      if (getUser.role === "faculty" && isApproved===true) {
         const token = jwt.sign(
           {
             id: getUser._id,

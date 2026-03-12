@@ -28,11 +28,6 @@ app.use(cors({ origin: "https://ems-akit.netlify.app", credentials: true }));
 app.use(cookieParser());
 app.use(express.json());
 
-app.use(
-  mongoSanitize({
-    replaceWith: "_"
-  })
-);
 
 const server = http.createServer(app);
 const io = new Server(server, {

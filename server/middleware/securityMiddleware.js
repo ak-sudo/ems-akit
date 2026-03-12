@@ -1,4 +1,4 @@
-import rateLimit from "express-rate-limit";
+const rateLimit = require("express-rate-limit");
 
 // In-memory IP tracking (can be replaced with Redis in production)
 const ipTracker = new Map();

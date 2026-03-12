@@ -26,7 +26,7 @@ auth.post("/signup",  signupLimiter,
   }
 });
 
-auth.post("/login",signupLimiter, async (req, res) => {
+auth.post("/login", async (req, res) => {
   const details = req.body;
 
   getUser = await User.findOne({ email: details.email });

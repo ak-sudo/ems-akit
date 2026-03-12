@@ -8,7 +8,7 @@ const verifyToken = require("../middleware/verifyToken");
 const {
   signupLimiter,
   emailProtection
-} = require("./middleware/securityMiddleware.js");
+} = require("../middleware/securityMiddleware.js");
 
 auth.post("/signup",  signupLimiter,
   emailProtection, async (req, res) => {

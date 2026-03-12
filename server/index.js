@@ -24,15 +24,15 @@ app.use(botProtection);
 app.use(ipSpamProtection);
 app.use(payloadProtection);
 
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(cookieParser());
+app.use(express.json());
+
 app.use(
   mongoSanitize({
     replaceWith: "_"
   })
 );
-
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
-app.use(cookieParser());
-app.use(express.json());
 
 const server = http.createServer(app);
 const io = new Server(server, {

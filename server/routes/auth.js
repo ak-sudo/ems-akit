@@ -5,8 +5,13 @@ const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const verifyToken = require("../middleware/verifyToken");
+const {
+  signupLimiter,
+  emailProtection
+} = require("./middleware/securityMiddleware.js");
 
-auth.post("/signup", async (req, res) => {
+auth.post("/signup",  signupLimiter,
+  emailProtection, async (req, res) => {
   const details = req.body;
 
   let hashedPassword = await bcrypt.hash(details.password, 10);
@@ -21,7 +26,7 @@ auth.post("/signup", async (req, res) => {
   }
 });
 
-auth.post("/login", async (req, res) => {
+auth.post("/login",signupLimiter, async (req, res) => {
   const details = req.body;
 
   getUser = await User.findOne({ email: details.email });
@@ -32,7 +37,7 @@ auth.post("/login", async (req, res) => {
     if (matchHatchPwd) {
       const isApproved = getUser.approvedAsFaculty;
 
-      if (getUser.role === "faculty" && isApproved===true) {
+      if (getUser.role === "faculty" && isApproved) {
         const token = jwt.sign(
           {
             id: getUser._id,
@@ -46,7 +51,7 @@ auth.post("/login", async (req, res) => {
 
         //   res.cookie("isLoggedIn", true);
         res.cookie("token", token, {
-          maxAge: 28800000,
+          maxAge: 3600000,
           httpOnly: true,
           secure: true,
           sameSite: "none",
@@ -78,7 +83,7 @@ auth.post("/login", async (req, res) => {
 
         //   res.cookie("isLoggedIn", true);
         res.cookie("token", token, {
-          maxAge: 28800000,
+          maxAge: 3600000,
           httpOnly: true,
           secure: true,
           sameSite: "none",

@@ -5,10 +5,8 @@ const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const verifyToken = require("../middleware/verifyToken");
-const {
-  signupLimiter,
-  emailProtection
-} = require("../middleware/securityMiddleware.js");
+
+app.use(express.json());
 
 auth.post("/signup", async (req, res) => {
   console.log('Signup Initiated')

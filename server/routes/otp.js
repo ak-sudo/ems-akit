@@ -41,24 +41,30 @@ otp.post("/send-otp", async (req, res) => {
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
   otpStore[phone] = otp;
 
-  const Data = await axios.post(
-    `${BASE_URL}/gateway/devices/${DEVICE_ID}/send-sms`,
-    {
-      recipients: [`${phone}`],
-      message: `EMS AKIT: Sign up OTP : ${otp}.\n
-This code is valid for 5 minutes.\n
-Do not share this code with anyone.`,
-    },
-    { headers: { "x-api-key": API_KEY } },
-  );
+  try{
+    
 
-  if (Data.status === 201) {
-    return res.json({ success: true, message: "OTP sent" });
-  } else {
-    return res.json({
-      success: false,
-      message: "Could not send OTP on phone. Try agin later",
-    });
+    const Data = await axios.post(
+      `${BASE_URL}/gateway/devices/${DEVICE_ID}/send-sms`,
+      {
+        recipients: [`${phone}`],
+        message: `EMS AKIT: Sign up OTP : ${otp}.\n
+  This code is valid for 5 minutes.\n
+  Do not share this code with anyone.`,
+      },
+      { headers: { "x-api-key": API_KEY } },
+    );
+  
+    if (Data.status === 201) {
+      return res.json({ success: true, message: "OTP sent" });
+    } else {
+      return res.json({
+        success: false,
+        message: "Could not send OTP on phone. Try agin later",
+      });
+    }}
+  catch{
+    console.log("Phone OTP Sending failed")
   }
 });
 

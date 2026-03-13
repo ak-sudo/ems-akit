@@ -11,6 +11,7 @@ const {
 } = require("../middleware/securityMiddleware.js");
 
 auth.post("/signup", async (req, res) => {
+  console.log('Signup Initiated')
   const details = req.body;
 
   let hashedPassword = await bcrypt.hash(details.password, 10);

@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const verifyToken = require("../middleware/verifyToken");
 
-app.use(express.json());
+auth.use(express.json());
 
 auth.post("/signup", async (req, res) => {
   console.log('Signup Initiated')

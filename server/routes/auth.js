@@ -19,9 +19,10 @@ auth.post("/signup", async (req, res) => {
   const user = new User(details);
   savedUser = await user.save();
   if (savedUser) {
-    return res.status(200).send({ success: "User signed up successfully" });
     console.log("User Created:")
+    return res.status(200).send({ success: "User signed up successfully" });
   } else {
+    console.log("Account creation failed")
     return res.status(400).send({ err: "Error signing up user" });
   }
 });

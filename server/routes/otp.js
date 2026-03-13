@@ -111,7 +111,7 @@ otp.post("/email/send-otp", async (req, res) => {
     );
 
     res.json({ token });
-    console.log("Email OTP sent");
+    console.log("Email OTP sent : "+otp+"to "+email);
   } catch (error) {
     console.log("EmailJS Error:", error.response?.data || error.message);
     res.status(500).json({ message: "Failed to send OTP on mail id" });
@@ -132,7 +132,7 @@ otp.post("/email/verify-otp", async (req, res) => {
     const isMatch = await bcrypt.compare(otp, decoded.otpHash);
 
     if (!isMatch) {
-      console.log("Wrong otp entered!")
+      console.log("Wrong otp entered by ",email+" otp ="+otp)
       return res.status(400).json({ message: "Invalid Email OTP" });}
 
     res.json({ message: "Email OTP verified successfully" });

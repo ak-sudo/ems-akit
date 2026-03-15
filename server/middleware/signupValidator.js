@@ -35,27 +35,6 @@ module.exports = function signupValidator(req, res, next) {
       });
     }
 
-    /* Password strength */
-    if (!validator.isStrongPassword(password, {
-      minLength: 8,
-      minLowercase: 1,
-      minUppercase: 1,
-      minNumbers: 1
-    })) {
-      return res.status(400).json({
-        error: "Password too weak"
-      });
-    }
-
-    /* Suspicious email pattern detection */
-    const suspiciousPattern = /[0-9]{5,}/;
-
-    if (suspiciousPattern.test(email)) {
-      return res.status(403).json({
-        error: "Suspicious signup detected"
-      });
-    }
-
     /* User-agent check */
     const userAgent = req.headers["user-agent"];
 

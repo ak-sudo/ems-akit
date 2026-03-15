@@ -3,6 +3,8 @@ const axios = require("axios");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
+const User = require("../models/user");
+
 
 const otp = express();
 
@@ -69,6 +71,12 @@ otp.post("/send-otp", async (req, res) => {
 });
 
 otp.post("/email/send-otp", async (req, res) => {
+  const isUser = await User.findOne({ email: req.body.email });
+
+  if(isUser){
+    return res.status(400).json({ message: "Email already registered" });
+  }
+  
   try {
     const { email, name } = req.body;
 

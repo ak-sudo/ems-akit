@@ -13,7 +13,7 @@ const {
 const signupValidator = require("../middleware/signupValidator");
 const signupLogger = require("../middleware/signupLogger");
 
-auth.post("/signup",signupLimiter,signupLogger, signupValidator, async (req, res) => {
+auth.post("/signup",signupLimiter,signupLogger, async (req, res) => {
 
   const details = req.body;
   console.log('Signup initiated for user : ',details.name)

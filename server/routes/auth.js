@@ -16,6 +16,7 @@ const signupLogger = require("../middleware/signupLogger");
 auth.post("/signup",signupLimiter,signupLogger, signupValidator, async (req, res) => {
 
   const details = req.body;
+  console.log('Signup initiated for user : ',details.name)
 
   let hashedPassword = await bcrypt.hash(details.password, 10);
   details.password = hashedPassword;
@@ -23,6 +24,7 @@ auth.post("/signup",signupLimiter,signupLogger, signupValidator, async (req, res
   const user = new User(details);
   savedUser = await user.save();
   if (savedUser) {
+    console.log('Account created for user : ',details.name)
     return res.status(200).send({ success: "User signed up successfully" });
   } else {
     return res.status(400).send({ err: "Error signing up user" });

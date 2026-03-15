@@ -5,12 +5,59 @@ const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const verifyToken = require("../middleware/verifyToken");
-
-auth.use(express.json());
+const geoip = require("geoip-lite");
+const useragent = require("useragent");
+// const {
+//   signupLimiter,
+//   emailProtection
+// } = require("../middleware/");
 
 auth.post("/signup", async (req, res) => {
-  console.log('Signup Initiated')
+  const ip =
+    req.headers["x-forwarded-for"]?.split(",")[0] || req.socket.remoteAddress;
+
+  const geo = geoip.lookup(ip) || {};
+
+  const agent = useragent.parse(req.headers["user-agent"] || "");
+
+  const logData = {
+    Time: new Date().toISOString(),
+    Endpoint: req.originalUrl,
+    Method: req.method,
+
+    IP: ip,
+    Country: geo.country || "Unknown",
+    City: geo.city || "Unknown",
+
+    Browser: agent.family || "Unknown",
+    OS: agent.os.toString() || "Unknown",
+    Device: agent.device.toString() || "Unknown",
+
+    EmailAttempted: req.body?.email || "N/A",
+
+    UserAgent: req.headers["user-agent"] || "Missing",
+
+    SecFetchSite: req.headers["sec-fetch-site"] || "Missing",
+    SecFetchMode: req.headers["sec-fetch-mode"] || "Missing",
+    Origin: req.headers["origin"] || "Missing",
+    Referer: req.headers["referer"] || "Missing",
+
+    Fingerprint: req.body?.fingerprint || "Missing",
+  };
+
   const details = req.body;
+  const haveVerifiedEmail = details.haveVerifiedEmail;
+
+  if (!haveVerifiedEmail) {
+    console.log(
+      "Email verification pending for user with email:",
+      details.email,
+    );
+    console.table(logData);
+    return res
+      .status(400)
+      .send({ err: "Please verify your email before signing up!" });
+  }
 
   let hashedPassword = await bcrypt.hash(details.password, 10);
   details.password = hashedPassword;
@@ -18,10 +65,8 @@ auth.post("/signup", async (req, res) => {
   const user = new User(details);
   savedUser = await user.save();
   if (savedUser) {
-    console.log("User Created:")
     return res.status(200).send({ success: "User signed up successfully" });
   } else {
-    console.log("Account creation failed")
     return res.status(400).send({ err: "Error signing up user" });
   }
 });
@@ -51,7 +96,7 @@ auth.post("/login", async (req, res) => {
 
         //   res.cookie("isLoggedIn", true);
         res.cookie("token", token, {
-          maxAge: 86400000,
+          maxAge: 3600000,
           httpOnly: true,
           secure: true,
           sameSite: "none",
@@ -83,7 +128,7 @@ auth.post("/login", async (req, res) => {
 
         //   res.cookie("isLoggedIn", true);
         res.cookie("token", token, {
-          maxAge: 86400000,
+          maxAge: 3600000,
           httpOnly: true,
           secure: true,
           sameSite: "none",
@@ -99,7 +144,7 @@ auth.post("/login", async (req, res) => {
             approved: isApproved,
           },
         });
-      }else {
+      } else {
         return res.status(401).json({
           msg: "Approval by admin is still pending! Once approved you will be logged in",
           user: {

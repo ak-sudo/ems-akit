@@ -5,59 +5,17 @@ const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const verifyToken = require("../middleware/verifyToken");
-const geoip = require("geoip-lite");
-const useragent = require("useragent");
-// const {
-//   signupLimiter,
-//   emailProtection
-// } = require("../middleware/");
 
-auth.post("/signup", async (req, res) => {
-  const ip =
-    req.headers["x-forwarded-for"]?.split(",")[0] || req.socket.remoteAddress;
+const {
+  signupLimiter,
+  emailProtection
+} = require("../middleware/securityMiddleware");
+const signupValidator = require("../middleware/signupValidator");
+const signupLogger = require("../middleware/signupLogger");
 
-  const geo = geoip.lookup(ip) || {};
-
-  const agent = useragent.parse(req.headers["user-agent"] || "");
-
-  const logData = {
-    Time: new Date().toISOString(),
-    Endpoint: req.originalUrl,
-    Method: req.method,
-
-    IP: ip,
-    Country: geo.country || "Unknown",
-    City: geo.city || "Unknown",
-
-    Browser: agent.family || "Unknown",
-    OS: agent.os.toString() || "Unknown",
-    Device: agent.device.toString() || "Unknown",
-
-    EmailAttempted: req.body?.email || "N/A",
-
-    UserAgent: req.headers["user-agent"] || "Missing",
-
-    SecFetchSite: req.headers["sec-fetch-site"] || "Missing",
-    SecFetchMode: req.headers["sec-fetch-mode"] || "Missing",
-    Origin: req.headers["origin"] || "Missing",
-    Referer: req.headers["referer"] || "Missing",
-
-    Fingerprint: req.body?.fingerprint || "Missing",
-  };
+auth.post("/signup",signupLimiter,signupLogger, signupValidator, async (req, res) => {
 
   const details = req.body;
-  const haveVerifiedEmail = details.haveVerifiedEmail;
-
-  if (!haveVerifiedEmail) {
-    console.log(
-      "Email verification pending for user with email:",
-      details.email,
-    );
-    console.table(logData);
-    return res
-      .status(400)
-      .send({ err: "Please verify your email before signing up!" });
-  }
 
   let hashedPassword = await bcrypt.hash(details.password, 10);
   details.password = hashedPassword;

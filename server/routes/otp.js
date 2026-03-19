@@ -17,16 +17,16 @@ const BASE_URL = "https://api.textbee.dev/api/v1";
 // const DEVICE_ID = "68bbb3f4c3eec747842325a0";
 
 //Yash's
-// const API_KEY = "066c647c-a590-4b25-a792-ecfecfe1fe69";
-// const DEVICE_ID = "69afe55460c621bb9a55b0cf";
+const API_KEY = "066c647c-a590-4b25-a792-ecfecfe1fe69";
+const DEVICE_ID = "69afe55460c621bb9a55b0cf";
 
 //Abhishek's
 // const API_KEY = "1c2a70a8-588f-40aa-adbb-12faaa286d2f";
 // const DEVICE_ID = "69b1716ababaf59d69bde5da";
 
 //Agraj's
-const API_KEY = "74e0f64a-06f5-4be9-a59a-380d38e82281";
-const DEVICE_ID = "6996d8d9f8dad099dc8d6112";
+// const API_KEY = "74e0f64a-06f5-4be9-a59a-380d38e82281";
+// const DEVICE_ID = "6996d8d9f8dad099dc8d6112";
 
 
 

@@ -77,8 +77,6 @@ try {
 
     const fullData = mergeRegistrationsWithRoll(details,registrations)
 
-    console.log(fullData)
-
     if (!registrations.length) {
       return res.status(404).json({ message: "No registrations found" });
     }
@@ -97,14 +95,14 @@ try {
     }));
 
     if (type === "csv") {
-      return exportToCSV(res, data, "registrations.csv"); // ✅ send clean data
+      return exportToCSV(res, data, `${data[0]['Event']}.csv`); // ✅ send clean data
     } else if (type === "pdf") {
       res.setHeader(
         "Content-Disposition",
-        `attachment; filename=registrations.pdf`
+        `attachment; filename=${data[0]['Event']}.pdf`
       );
       res.setHeader("Content-Type", "application/pdf");
-      exportToPDF("registrations.pdf", data, res); // ✅ pass clean data here
+      exportToPDF(`${data[0]['Event']}.pdf`, data, res); // ✅ pass clean data here
     } else {
       return res.status(400).json({ message: "Invalid export type" });
     }

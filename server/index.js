@@ -7,22 +7,8 @@ const http = require("http");
 const { Server } = require("socket.io");
 const mongoSanitize = require("express-mongo-sanitize");
 
-// const {
-//   apiLimiter,
-//   botProtection,
-//   ipSpamProtection,
-//   payloadProtection
-// } = require("./middleware/securityMiddleware.js");
-
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-
-// // GLOBAL SECURITY
-// app.use(apiLimiter);
-// app.use(botProtection);
-// app.use(ipSpamProtection);
-// app.use(payloadProtection);
 
 app.use(cors({ origin: "https://ems-akit.netlify.app", credentials: true }));
 app.use(cookieParser());
@@ -57,6 +43,10 @@ app.use("/api/auth", authRoutes);
 const otpRoutes = require("./routes/otp");
 app.use("/api/otp", otpRoutes);
 
+// REGISTRATION ROUTES
+const register = require("./routes/register");
+app.use("/api/view", register);
+
 // API Authentication
 app.use(platformAuth);
 
@@ -82,10 +72,6 @@ app.use("/api/albums", album);
 // UPDATE USER ROUTES
 const updateUserRoutes = require("./routes/updateDetail");
 app.use("/api/user", updateUserRoutes);
-
-// REGISTRATION ROUTES
-const register = require("./routes/register");
-app.use("/api/view", register);
 
 // PROFILE ROUTES
 

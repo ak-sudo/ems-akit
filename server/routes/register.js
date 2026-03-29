@@ -95,7 +95,7 @@ try {
     }));
 
     if (type === "csv") {
-      return exportToCSV(res, data, `${data[0]['Event']}.csv`); // ✅ send clean data
+      return exportToCSV(res, data, `${data[0]['Program']}.csv`); // ✅ send clean data
     } else if (type === "pdf") {
       res.setHeader(
         "Content-Disposition",

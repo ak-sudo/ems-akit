@@ -99,10 +99,10 @@ try {
     } else if (type === "pdf") {
       res.setHeader(
         "Content-Disposition",
-        `attachment; filename=${data[0]['Event']}.pdf`
+        `attachment; filename=${data[0]['Program']}.pdf`
       );
       res.setHeader("Content-Type", "application/pdf");
-      exportToPDF(`${data[0]['Event']}.pdf`, data, res); // ✅ pass clean data here
+      exportToPDF(`${data[0]['Program']}.pdf`, data, res); // ✅ pass clean data here
     } else {
       return res.status(400).json({ message: "Invalid export type" });
     }

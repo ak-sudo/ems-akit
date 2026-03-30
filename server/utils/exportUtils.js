@@ -33,7 +33,7 @@ function exportToPDF(filename, data, res) {
   doc.pipe(res);
 
   // Title
-  doc.fontSize(18).text("Event Registrations Report", { align: "center" });
+  doc.fontSize(18).text(`Registrations for ${filename.split('.')[0]}`, { align: "center" });
   doc.moveDown(1.5);
 
   // Define columns
